@@ -55,3 +55,41 @@
   kelihatan jelas (outline aksen ungu) pada butang.
 - **Belum siap / TODO:** Fasa 2 (`<KadJemputan>` + 4 motion + `/kad-lab`) belum bermula.
 - **Beza dari dokumen:** tiada.
+
+## [2026-08-23 05:55] — Fasa 2: Komponen Kad + 4 motion
+- **Fasa:** Fasa 2 — Komponen Kad + 4 motion
+- **Buat apa:** Bina `<KadJemputan pesanan tema mod="pratonton"|"awam" />` sebagai SATU
+  sumber render kad (CLAUDE.md §3.2). Komponen sokongan: `Pembukaan` (4 motion — Sampul,
+  Tirai, Bidai, Larut — sentuh untuk buka, overlay hilang lepas animasi via `setTimeout`
+  sepadan tempoh transisi, butang Ulang pembukaan), `TitikPenunjuk` (indeks aktif dari
+  `scrollTop/clientHeight` throttle rAF, klik → `child.offsetTop`), `ButangMuzik` (tiada
+  autoplay), `Taburan` (kelopak/hati/tiada, warna ikut tema), `BentukGambar` (gerbang/
+  bulat/segi), `HalamanUtama`, `HalamanTempat`, `HalamanKataKata` (hanya bila
+  `bilHalaman=4` & ada `kataTeks`), `HalamanPeta` (Waze/Maps + borang RSVP UI-sahaja,
+  dimatikan bila `mod="pratonton"`, + butang WhatsApp). Setup 5 pasangan huruf tetap
+  (`lib/tema/fonts.ts`) via `next/font/google` dan helper `gayaTemaKad()` yang suntik
+  tema sebagai CSS variable (`--kad-latar`, `--kad-aksen`, `--kad-teks`, dll.) pada bekas
+  kad sahaja — tidak ditulis ke Tailwind config. Bina fixture data (`lib/fixture/data.ts`)
+  ikut `04-DATA-MODEL.md §6.4` (contoh-kahwin, contoh-korporat) + 3 preset tema
+  (`lib/fixture/tema-preset.ts`) untuk demo di `/kad-lab`. Bekas scroll guna
+  `scroll-snap-type: y mandatory` dan seksyen `height:100%` bekas (bukan `100vh`).
+- **Fail disentuh:** `komponen/kad/*.tsx` (10 fail), `lib/fixture/jenis.ts`,
+  `lib/fixture/data.ts`, `lib/fixture/tema-preset.ts`, `lib/tema/jenis.ts`,
+  `lib/tema/fonts.ts`, `lib/tema/suntik.ts`, `lib/util/tarikh.ts`, `app/kad-lab/page.tsx`
+- **Migrasi DB:** tiada
+- **Env baru:** tiada
+- **Diuji:** `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm test` ✅ ·
+  `grep -rl "KadJemputan("` sahkan hanya `KadJemputan.tsx` sendiri (tiada salinan JSX
+  kad) · screenshot Chromium 1280px: kad tertutup (Sampul), kad terbuka (HalamanUtama,
+  HalamanTempat, HalamanKataKata, HalamanPeta dengan borang RSVP & WhatsApp), tukar
+  pesanan+tema ke set korporat (palet biru, huruf Inter) — motion & bilangan halaman
+  kekal ikut pilihan berasingan, warna/huruf tema bertukar serentak tanpa reload.
+- **Belum siap / TODO:** Ukuran CLS sebenar (Lighthouse) dan ujian Safari iOS sebenar
+  belum dapat dijalankan dalam sandbox ini (hanya Chromium tersedia) — ditangguh & ditanda
+  eksplisit dalam `PROGRESS.md` untuk disahkan semasa Fasa 8 (Local QA). Penghantaran RSVP
+  sebenar (`POST /api/rsvp`), Supabase, dan penjana palet (`POST /api/palet`) sengaja
+  belum dibina — di luar skop Fasa 2.
+- **Beza dari dokumen:** Reka bentuk "overlay hilang bila animasi tamat" (09-BUILD-PHASES
+  §Fasa 2) dilaksanakan sebagai overlay mutlak di atas kandungan kad (bukan halaman
+  scroll-snap berasingan) supaya "halaman 0" benar-benar hilang selepas dibuka —
+  ditafsir dari perkataan "overlay" dalam spesifikasi, bukan keputusan produk baru.

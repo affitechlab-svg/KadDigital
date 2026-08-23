@@ -28,7 +28,19 @@ Fasa ikut `DEV HANDOFF DOCS/09-BUILD-PHASES.md`. Satu fasa satu masa — tak lom
 - [x] `lint` + `typecheck` + `build` lulus; entri changelog ditulis
 
 ## Fasa 2 — Komponen Kad + 4 motion
-⬜ Belum Mula — `<KadJemputan>`, 4 motion pembukaan, `/kad-lab`.
+✅ Siap — `<KadJemputan>`, 4 motion pembukaan, `/kad-lab`.
+- [x] Empat motion boleh dimainkan dan diulang; tiada kad kelihatan sebelum pembukaan tamat
+- [x] Scroll snap tepat; tiada halaman separa (`scroll-snap-type: y mandatory`, seksyen `height:100%` bekas)
+- [x] Titik penunjuk sentiasa tepat; klik titik melompat ke halaman betul (`offsetTop`)
+- [x] Tukar motion **tidak** mengubah warna atau huruf kad (disahkan visual — AC-6)
+- [x] Simple = 3 halaman + pembukaan; Signature/Luxury = 4 + pembukaan (kawalan pakej di `/kad-lab`)
+- [x] Tukar tema fixture → warna, huruf, hiasan kad bertukar tanpa reload (disahkan visual, Malam Ungu ↔ Korporat Biru)
+- [x] Muzik tidak autoplay (tiada fail muzik dalam fixture Fasa 2 — `ButangMuzik` hanya papar bila ada `url`)
+- [x] Animasi guna `transform`/`opacity` sahaja
+- [x] Hanya **satu** definisi kad dalam repo (disahkan `grep` — `KadJemputan.tsx` sahaja)
+- [x] Entri changelog ditulis
+- [ ] CLS < 0.1 diuji — belum diukur dengan Lighthouse (akan disahkan penuh dalam Fasa 8 Local QA)
+- [ ] Diuji Safari iOS sebenar — belum boleh diuji dalam sandbox ini (hanya Chromium); disahkan logik `offsetTop` betul secara kod & visual Chromium
 
 ## Fasa 3 — Static pages guna seed data
 ⬜ Belum Mula — semua 15+ skrin wujud & boleh diklik, guna data fixture.

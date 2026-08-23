@@ -56,3 +56,22 @@ Format setiap entri:
   pada 360px & 1280px (tiada elemen terpotong), Modal & Sheet diuji buka/tutup, navigasi
   papan kekunci disahkan (fokus kelihatan jelas pada butang).
 - Status: Siap — Fasa 1 selesai, semua checkpoint ditanda dalam `PROGRESS.md`.
+
+## 2026-08-23 05:55 (UTC)
+- Diminta: Teruskan ke Fasa 2 — Komponen Kad + 4 motion: `<KadJemputan>` (satu sumber
+  render), 4 motion pembukaan (Sampul/Tirai/Bidai/Larut), 4 halaman kandungan kad, guna
+  fixture data (kahwin & korporat), halaman dev `/kad-lab`.
+- Dibuat: Bina fixture data (`lib/fixture`) + jenis TypeScript (Tema, Pesanan). Setup 5
+  pasangan huruf tetap via `next/font/google` + helper suntikan tema sebagai CSS variable
+  pada bekas kad sahaja. Bina komponen kad: `Pembukaan` (4 motion, sentuh untuk buka,
+  butang Ulang pembukaan), `TitikPenunjuk` (offsetTop), `ButangMuzik` (no autoplay),
+  `Taburan` (kelopak/hati), `HalamanUtama`, `HalamanTempat`, `HalamanKataKata` (hanya bila
+  4 halaman), `HalamanPeta` (Waze/Maps + borang RSVP UI-sahaja + WhatsApp). Gabung semua
+  jadi `<KadJemputan pesanan tema mod="pratonton"|"awam" />` dengan scroll-snap-type y
+  mandatory, seksyen height:100% bekas (bukan 100vh). Bina `/kad-lab` untuk pilih jenis
+  acara/motion/tema/pakej dan lihat kad berubah serta-merta. Disahkan secara visual:
+  motion Sampul berfungsi, tukar tema (Malam Ungu ↔ Korporat Biru) tak jejas motion/pakej,
+  4 halaman kandungan betul, `grep` sahkan hanya satu definisi `KadJemputan` dalam repo.
+- Status: Siap — Fasa 2 selesai. Dua item belum boleh disahkan dalam sandbox ini (ukuran
+  CLS Lighthouse & ujian Safari iOS sebenar) — ditangguh ke Fasa 8 Local QA, ditanda dalam
+  `PROGRESS.md`.
