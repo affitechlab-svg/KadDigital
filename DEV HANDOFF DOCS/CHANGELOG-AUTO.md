@@ -124,3 +124,76 @@
   `/buat/[id]/*` sebenar) kerana `09-BUILD-PHASES.md §Fasa 3` sendiri menetapkan
   `/buat/demo/maklumat` dsb. sebagai laluan Fasa 3 (id sebenar datang Fasa 5 bila DB
   wujud) — konsisten dengan dokumen, bukan penyimpangan.
+
+## [2026-08-23 12:00] — Fasa 4: Database & Auth (Supabase lokal) — KOD SIAP, BELUM DISAHKAN PENUH
+- **Fasa:** Fasa 4 — Database & Auth (Supabase lokal)
+- **Buat apa:** Tulis 6 migrasi SQL bernombor (`supabase/migrations/`): enum + profil +
+  pakej + motion; jadual `pesanan` teras + indeks; `media`/`bayaran`/`rsvp`/
+  `permintaan_motion`/`log_admin`; 6 fungsi & trigger (`set_dikemas_pada`,
+  `jana_no_rujukan`, `semak_had_atur_cara`, `jana_slug`, `terbitkan_pesanan`,
+  `dapatkan_kad`, `hantar_rsvp`, `tangani_pengguna_baharu`); RLS pada **setiap** jadual;
+  Storage buckets (`rujukan`, `subjek` peribadi; `muzik-pustaka`, `awam` awam) + polisi.
+  Tulis `seed.sql` (3 pakej, 4 motion, 2 pesanan contoh `terbit`, 2 akaun demo). Tulis
+  pelanggan Supabase browser (`lib/supabase/pelayar.ts`) & server
+  (`lib/supabase/pelayan.ts`), `middleware.ts` (sesi `/buat/*`, `/dashboard/*`,
+  `/admin/*` + semakan peranan admin), `app/not-found.tsx`. Sambung Auth sebenar:
+  `/daftar` (`signUp`), `/masuk` (`signInWithPassword` + redirect `?seterusnya=`),
+  `/lupa-kata-laluan` (`resetPasswordForEmail`), `/tetapkan-kata-laluan`
+  (`updateUser`), log keluar (`signOut`) di `/dashboard/akaun` (skrin ini juga kini baca/
+  tulis `profil` sebenar). Tambah `lib/skema/auth.ts` (Zod). Tukar `/harga` dan
+  `/buat/pakej` daripada fixture ke jadual `pakej` sebenar (`lib/supabase/pakej.ts`
+  memetakan baris DB snake_case → bentuk `PakejFixture` sedia ada, supaya komponen
+  paparan tidak berubah). Tulis ujian RLS automatik (`supabase/tests/rls.test.ts`)
+  guna `@supabase/supabase-js` sebenar — reka bentuk langkau (`describe.skipIf`) dengan
+  mesej jelas bila Supabase tempatan tiada, supaya `pnpm test` tidak gagal/tersekat di
+  persekitaran tanpa Docker.
+- **Fail disentuh:** `supabase/migrations/*.sql` (6 fail), `supabase/seed.sql`,
+  `supabase/tests/rls.test.ts`, `lib/supabase/{pelayar,pelayan,pakej}.ts`,
+  `lib/skema/auth.ts`, `middleware.ts`, `app/not-found.tsx`,
+  `app/(auth)/{daftar,masuk,lupa-kata-laluan,tetapkan-kata-laluan}/page.tsx`,
+  `app/(client)/dashboard/akaun/page.tsx`, `app/(awam)/page.tsx`,
+  `app/(awam)/harga/page.tsx`, `app/(client)/buat/pakej/page.tsx`, `.env.local`
+  (tempatan sahaja, tidak di-commit)
+- **Migrasi DB:** `20260823113326_enum_dan_rujukan.sql`,
+  `20260823113329_jadual_pesanan.sql`, `20260823113333_jadual_sokongan.sql`,
+  `20260823113336_fungsi_trigger.sql`, `20260823113339_rls.sql`,
+  `20260823113343_storage.sql`
+- **Env baru:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+  `SUPABASE_SERVICE_ROLE_KEY` kini **digunakan** (sebelum ini kosong dalam
+  `.env.example` sejak Fasa 0)
+- **Diuji:** ⚠️ **`supabase start` (Docker) TIDAK DAPAT dijalankan dalam sandbox sesi
+  ini** — dasar rangkaian sandbox menyekat capaian ke `production.cloudfront.docker.com`
+  (CDN imej Docker Hub), disahkan melalui log ralat 403 berulang dan status proksi
+  ejen. Sebagai gantian terbaik yang boleh dilakukan tanpa Docker: pasang PostgreSQL 16
+  terus (bukan Docker) dalam sandbox, cipta stub minimum skema `auth`/`storage` +
+  peranan (`anon`/`authenticated`/`service_role`) + grant asas meniru bootstrap
+  Supabase sebenar, jalankan kesemua 6 migrasi + `seed.sql` terhadapnya — **semua
+  berjaya tanpa ralat**. Ujian manual (`psql` + `SET ROLE` + `set_config
+  request.jwt.claim.sub`) mengesahkan: `jana_slug` hasilkan `-2` bila tajuk sama;
+  `hantar_rsvp` masuk rekod; `semak_had_atur_cara` tolak atur cara melebihi had pakej;
+  `dapatkan_kad('contoh-kahwin')` pulang data, slug tidak wujud pulang kosong;
+  `terbitkan_pesanan` set slug+status+tarikh tamat betul; **RLS**: pengguna lain nampak
+  0 baris pesanan orang lain, pemilik nampak pesanan sendiri, INSERT bagi pihak orang
+  lain ditolak. Semasa ujian ini, **jubang keselamatan sebenar ditemui**: dengan RLS
+  row-level sahaja, client masih boleh `UPDATE pesanan SET status='dibayar'` pada
+  pesanan sendiri — melanggar CLAUDE.md §3.5 & AC-8 secara langsung. Dibaiki dengan
+  `REVOKE UPDATE` table-wide + `GRANT UPDATE` hanya pada lajur selamat untuk
+  `authenticated`; diuji semula — client kini `permission denied` bila cuba tukar
+  `status`, tapi masih boleh edit `tajuk_a` dsb. `pnpm lint` ✅ · `pnpm typecheck` ✅ ·
+  `pnpm build` ✅ (32 laluan + middleware, guna `.env.local` kunci demo tempatan piawai
+  Supabase) · `pnpm test` ✅ (ujian RLS automatik disahkan **langkau dengan betul** bila
+  Supabase tempatan tiada — belum disahkan **jalan penuh** kerana itu) ·
+  `grep SERVICE_ROLE .next/static` kosong ✅. **TIDAK dapat diuji dalam sandbox ini:**
+  `supabase start`/`db reset` sebenar, log masuk/daftar/keluar sebenar dalam browser,
+  ujian RLS automatik terhadap Supabase sebenar (bukan Postgres tulen simulasi).
+- **Belum siap / TODO:** Pemilik projek WAJIB jalankan `supabase start` di komputer
+  sendiri (dengan Docker) dan ikut langkah pengesahan dalam `PROGRESS.md` §Fasa 4
+  sebelum fasa ini ditanda 100% siap — termasuk jalankan `pnpm test` semula untuk
+  sahkan suite RLS automatik lulus **penuh** (bukan dilangkau), dan uji aliran
+  daftar/masuk/keluar/reset kata laluan sebenar dalam browser.
+- **Beza dari dokumen:** (1) `supabase db reset` disahkan guna Postgres tulen + stub,
+  bukan stack Supabase penuh — sebab dijelaskan di atas (Docker disekat sandbox).
+  (2) Kata laluan akaun demo (`kaddigital123`) di-hardcode dalam `seed.sql` walaupun
+  `04-DATA-MODEL.md §6.5` sebut ".env.local sahaja" — keputusan & sebab dicatat penuh
+  dalam `DEV HANDOFF DOCS/SOALAN.md` (S-002), tanda `// TODO(putus): S-002` dalam
+  `seed.sql`.

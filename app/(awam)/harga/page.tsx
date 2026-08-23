@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Check, X } from "lucide-react";
 import { Butang } from "@/komponen/ui/Butang";
-import { fixturePakej, formatRinggit } from "@/lib/fixture/pakej";
+import { formatRinggit, type PakejFixture } from "@/lib/fixture/pakej";
+import { dapatkanSenaraiPakej } from "@/lib/supabase/pakej";
+import { ciptaKlienPelayan } from "@/lib/supabase/pelayan";
 
-const baris: { label: string; papar: (p: (typeof fixturePakej)[number]) => React.ReactNode }[] = [
+const baris: { label: string; papar: (p: PakejFixture) => React.ReactNode }[] = [
   { label: "Harga", papar: (p) => formatRinggit(p.hargaSen) },
   { label: "Halaman scroll", papar: (p) => p.bilHalaman },
   { label: "Motion pembukaan", papar: (p) => (p.motionTersuai ? "Semua + tersuai" : p.motionDibenar.join(", ")) },
@@ -20,7 +22,12 @@ const baris: { label: string; papar: (p: (typeof fixturePakej)[number]) => React
   { label: "Tempoh pautan aktif", papar: (p) => `${p.bulanAktif} bulan` },
 ];
 
-export default function HalamanHarga() {
+export const revalidate = 3600; // ISR 1 jam (03-SITEMAP-ROUTING.md §2)
+
+export default async function HalamanHarga() {
+  const supabase = await ciptaKlienPelayan();
+  const senaraiPakej = await dapatkanSenaraiPakej(supabase);
+
   return (
     <main className="mx-auto max-w-5xl px-4 py-16 sm:px-8">
       <div className="mb-10 text-center">
@@ -34,7 +41,7 @@ export default function HalamanHarga() {
           <thead>
             <tr className="border-b border-[var(--color-section-ghost)]">
               <th className="px-4 py-3" />
-              {fixturePakej.map((p) => (
+              {senaraiPakej.map((p) => (
                 <th key={p.kod} className="relative px-4 py-3 text-center">
                   {p.popular && (
                     <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-[var(--color-accent)] px-2 py-0.5 text-[10px] font-semibold text-[#161826]">
@@ -52,7 +59,7 @@ export default function HalamanHarga() {
                 <td className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-[var(--color-text)]/50">
                   {b.label}
                 </td>
-                {fixturePakej.map((p) => (
+                {senaraiPakej.map((p) => (
                   <td key={p.kod} className="px-4 py-3 text-center text-[var(--color-text)]">
                     <span className="flex items-center justify-center">{b.papar(p)}</span>
                   </td>
@@ -61,7 +68,7 @@ export default function HalamanHarga() {
             ))}
             <tr>
               <td className="px-4 py-4" />
-              {fixturePakej.map((p) => (
+              {senaraiPakej.map((p) => (
                 <td key={p.kod} className="px-4 py-4 text-center">
                   <Link href="/daftar">
                     <Butang varian={p.popular ? "utama" : "sekunder"}>Pilih {p.namaPapar}</Butang>

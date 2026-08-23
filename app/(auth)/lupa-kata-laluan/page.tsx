@@ -1,17 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { Amaran } from "@/komponen/ui/Amaran";
 import { Butang } from "@/komponen/ui/Butang";
 import { Input } from "@/komponen/ui/Input";
+import { skemaLupaKataLaluan } from "@/lib/skema/auth";
+import { ciptaKlienPelayar } from "@/lib/supabase/pelayar";
 
-/** UI sahaja — penghantaran e-mel reset sebenar (Supabase Auth) dibina dalam Fasa 4. */
 export default function HalamanLupaKataLaluan() {
   const [dihantar, setDihantar] = useState(false);
+  const [ralat, setRalat] = useState<{ emel?: string }>({});
+  const [memuat, setMemuat] = useState(false);
 
-  function hantar(e: FormEvent) {
+  async function hantar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setRalat({});
+
+    const borang = new FormData(e.currentTarget);
+    const hasil = skemaLupaKataLaluan.safeParse({ emel: borang.get("emel") });
+    if (!hasil.success) {
+      setRalat({ emel: hasil.error.flatten().fieldErrors.emel?.[0] });
+      return;
+    }
+
+    setMemuat(true);
+    const supabase = ciptaKlienPelayar();
+    await supabase.auth.resetPasswordForEmail(hasil.data.emel, {
+      redirectTo: `${window.location.origin}/tetapkan-kata-laluan`,
+    });
+    setMemuat(false);
+    // Sentiasa papar mesej berjaya walau e-mel wujud atau tidak — elak
+    // membocorkan kewujudan akaun (enumeration).
     setDihantar(true);
   }
 
@@ -29,8 +48,8 @@ export default function HalamanLupaKataLaluan() {
         </Amaran>
       ) : (
         <form onSubmit={hantar} className="flex flex-col gap-4">
-          <Input label="E-mel" type="email" placeholder="anda@contoh.com" required />
-          <Butang type="submit" className="w-full">
+          <Input name="emel" label="E-mel" type="email" placeholder="anda@contoh.com" ralat={ralat.emel} />
+          <Butang type="submit" memuat={memuat} className="w-full">
             Hantar pautan
           </Butang>
         </form>

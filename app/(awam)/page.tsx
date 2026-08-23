@@ -2,9 +2,14 @@ import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { Butang } from "@/komponen/ui/Butang";
 import { KadPakej } from "@/komponen/ui/KadPakej";
-import { fixturePakej, formatRinggit } from "@/lib/fixture/pakej";
+import { formatRinggit } from "@/lib/fixture/pakej";
+import { dapatkanSenaraiPakej } from "@/lib/supabase/pakej";
+import { ciptaKlienPelayan } from "@/lib/supabase/pelayan";
 
-export default function LamanUtama() {
+export default async function LamanUtama() {
+  const supabase = await ciptaKlienPelayan();
+  const senaraiPakej = await dapatkanSenaraiPakej(supabase);
+
   return (
     <main className="flex flex-col gap-20 px-4 py-16 sm:px-8">
       <section className="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
@@ -34,7 +39,7 @@ export default function LamanUtama() {
           Pilih pakej yang sesuai
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          {fixturePakej.map((p) => (
+          {senaraiPakej.map((p) => (
             <KadPakej
               key={p.kod}
               nama={p.namaPapar}
@@ -49,13 +54,15 @@ export default function LamanUtama() {
             />
           ))}
         </div>
-        <p className="text-center text-xs text-[var(--color-text)]/50">
-          Harga bermula {formatRinggit(fixturePakej[0]!.hargaSen)} — lihat butiran penuh di{" "}
-          <Link href="/harga" className="text-[var(--color-accent)] underline">
-            halaman harga
-          </Link>
-          .
-        </p>
+        {senaraiPakej[0] && (
+          <p className="text-center text-xs text-[var(--color-text)]/50">
+            Harga bermula {formatRinggit(senaraiPakej[0].hargaSen)} — lihat butiran penuh di{" "}
+            <Link href="/harga" className="text-[var(--color-accent)] underline">
+              halaman harga
+            </Link>
+            .
+          </p>
+        )}
       </section>
     </main>
   );

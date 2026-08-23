@@ -91,3 +91,23 @@ Format setiap entri:
   (Playwright + screenshot), admin diuji 1280px, tiada import Supabase (`grep`),
   `lint`/`typecheck`/`build` lulus bersih.
 - Status: Siap — Fasa 3 selesai, semua checkpoint ditanda dalam `PROGRESS.md`.
+
+## 2026-08-23 12:00 (UTC)
+- Diminta: Teruskan ke Fasa 4 — Database & Auth (Supabase lokal): migrasi SQL, RLS,
+  seed, pelanggan Supabase, middleware sesi, auth sebenar, tukar /harga & /buat/pakej
+  ke DB, ujian RLS automatik.
+- Dibuat: Tulis 6 migrasi SQL lengkap (enum, semua 9 jadual, indeks, trigger, 6 fungsi
+  termasuk `dapatkan_kad`/`hantar_rsvp`/`terbitkan_pesanan`, RLS pada setiap jadual,
+  Storage buckets+polisi) dan `seed.sql`. **PENTING:** `supabase start` (Docker) tak
+  boleh jalan dalam sandbox ini — dasar rangkaian sekat Docker Hub. Sebagai gantian,
+  saya uji migrasi terhadap Postgres tulen (dipasang terus, bukan Docker) dengan stub
+  minimum skema `auth`/`storage`. Semasa ujian ini saya **jumpa jubang keselamatan
+  sebenar**: client asalnya boleh tukar `status='dibayar'` terus melalui RLS row-level
+  sahaja — dibaiki dengan sekatan peringkat lajur (REVOKE+GRANT). Tulis pelanggan
+  Supabase browser/server + middleware sesi, sambung Auth sebenar ke 4 skrin auth +
+  log keluar, tukar `/harga`+`/buat/pakej` ke jadual DB sebenar, tulis ujian RLS
+  automatik (Vitest) yang langkau dengan mesej jelas bila Supabase tempatan tiada.
+- Status: **Kod siap, TAPI BELUM disahkan hujung-ke-hujung** — perlukan Docker yang
+  tiada dalam sandbox ini. Anda perlu jalankan `supabase start` di komputer sendiri dan
+  ikut langkah pengesahan dalam `PROGRESS.md` sebelum Fasa 4 ditanda 100% siap. Semua
+  had & sebab dicatat jelas dalam `PROGRESS.md` dan `CHANGELOG-AUTO.md`.
