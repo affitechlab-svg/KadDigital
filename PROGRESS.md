@@ -18,7 +18,14 @@ Fasa ikut `DEV HANDOFF DOCS/09-BUILD-PHASES.md`. Satu fasa satu masa — tak lom
 - [x] Entri `CHANGELOG-AUTO.md` ditulis
 
 ## Fasa 1 — Component library (Nocturne)
-⬜ Belum Mula — semua kepingan UI platform (`Butang`, `Input`, dll.) + halaman `/kitchen-sink`.
+✅ Siap — semua kepingan UI platform + halaman `/kitchen-sink`.
+- [x] Setiap komponen wujud dan muncul dalam `/kitchen-sink`
+- [x] Setiap komponen ada keadaan: normal, fokus, disabled, ralat (mana berkenaan)
+- [x] Semua label contoh dalam Bahasa Melayu
+- [x] Boleh dinavigasi guna papan kekunci; fokus kelihatan jelas
+- [x] Diuji pada 360px dan 1280px — tiada elemen terpotong
+- [x] Tiada komponen yang memanggil `fetch` atau Supabase
+- [x] `lint` + `typecheck` + `build` lulus; entri changelog ditulis
 
 ## Fasa 2 — Komponen Kad + 4 motion
 ⬜ Belum Mula — `<KadJemputan>`, 4 motion pembukaan, `/kad-lab`.

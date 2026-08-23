@@ -43,3 +43,16 @@ Format setiap entri:
      kosong); `.gitignore` sekat `.env.local` tapi kekalkan `.env.example`.
   6. Vitest (unit smoke test) + Playwright (E2E smoke test) dipasang & lulus.
 - Status: Siap — Fasa 0 selesai, semua checkpoint ditanda dalam `PROGRESS.md`.
+
+## 2026-08-23 05:45 (UTC)
+- Diminta: Teruskan ke Fasa 1 — Component library (Nocturne): semua kepingan UI platform
+  (Butang, Input, TextArea, Pilihan, Toggle, RadioKad, Chip, KadPakej, KadPilihan,
+  PenunjukLangkah, BarAtas, Amaran/Ralat/Kosong/Memuat, Modal, Sheet, Jadual+Paginasi,
+  KadStat, MuatNaikFail, PetakWarna, TogolBahasa) + halaman `/kitchen-sink`.
+- Dibuat: Bina 22 komponen presentational dalam `/komponen/ui` (props sahaja, tiada
+  fetch/Supabase), semua label & mesej dalam BM, aksesibiliti (label, aria, focus-visible,
+  role) pada setiap satu. Bina halaman `/kitchen-sink` yang paparkan semua komponen dalam
+  pelbagai keadaan (normal/fokus/disabled/ralat). Disahkan secara visual dengan screenshot
+  pada 360px & 1280px (tiada elemen terpotong), Modal & Sheet diuji buka/tutup, navigasi
+  papan kekunci disahkan (fokus kelihatan jelas pada butang).
+- Status: Siap — Fasa 1 selesai, semua checkpoint ditanda dalam `PROGRESS.md`.

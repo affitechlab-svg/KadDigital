@@ -33,3 +33,25 @@
   semua ini sokongan tooling yang diminta eksplisit dalam skop Fasa 0
   ("ESLint + Prettier", "Vitest + Playwright") tetapi tiada dalam senarai pakej
   `02-TECH-STACK.md §2`; tiada pakej produk/runtime ditambah di luar senarai.
+
+## [2026-08-23 05:45] — Fasa 1: Component library (Nocturne)
+- **Fasa:** Fasa 1 — Component library (Nocturne)
+- **Buat apa:** Bina 22 komponen presentational dalam `/komponen/ui`: `Butang` (4 varian +
+  loading/disabled), `Input`, `TextArea`, `Pilihan` (select), `Toggle`, `RadioKad`, `Chip`,
+  `KadPakej`, `KadPilihan`, `PenunjukLangkah`, `BarAtas`, `Amaran`, `Ralat`, `Kosong`,
+  `Memuat` (skeleton), `Modal`, `Sheet` (guna elemen native `<dialog>` untuk fokus-trap &
+  Esc-to-close percuma), `Jadual`, `Paginasi`, `KadStat`, `MuatNaikFail` (drag/drop +
+  pratonton + had saiz), `PetakWarna`, `TogolBahasa`. Semua props-only, tiada `fetch`/
+  Supabase. Bina halaman dev `/kitchen-sink` yang paparkan setiap komponen dalam pelbagai
+  keadaan. Tambah util kecil `lib/util/cn.ts` (gabung className, tiada pakej luar
+  ditambah untuk ini).
+- **Fail disentuh:** `komponen/ui/*.tsx` (22 fail), `lib/util/cn.ts`,
+  `app/kitchen-sink/page.tsx`
+- **Migrasi DB:** tiada
+- **Env baru:** tiada
+- **Diuji:** `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` ✅ · `pnpm test` ✅ ·
+  screenshot `/kitchen-sink` pada 360px & 1280px (tiada elemen terpotong) · Modal & Sheet
+  diuji buka/tutup dengan Playwright · navigasi papan kekunci (Tab) disahkan — fokus
+  kelihatan jelas (outline aksen ungu) pada butang.
+- **Belum siap / TODO:** Fasa 2 (`<KadJemputan>` + 4 motion + `/kad-lab`) belum bermula.
+- **Beza dari dokumen:** tiada.
