@@ -75,3 +75,19 @@ Format setiap entri:
 - Status: Siap — Fasa 2 selesai. Dua item belum boleh disahkan dalam sandbox ini (ukuran
   CLS Lighthouse & ujian Safari iOS sebenar) — ditangguh ke Fasa 8 Local QA, ditanda dalam
   `PROGRESS.md`.
+
+## 2026-08-23 06:10 (UTC)
+- Diminta: Teruskan ke Fasa 3 — Static pages guna seed data: semua skrin dalam sitemap
+  wujud & boleh diklik hujung-ke-hujung, guna fixture (belum Supabase/auth/bayaran
+  sebenar).
+- Dibuat: Bina 36 laluan — 6 awam (`/`, `/harga`, `/contoh`, `/soalan-lazim`, `/terma`,
+  `/privasi`), 4 auth UI-sahaja, 9 skrin aliran cipta (`/buat/pakej` + 8 langkah
+  `/buat/demo/*` guna wizard state React Context dalam memori — BUKAN localStorage),
+  `/i/[slug]` dengan kad awam sebenar (contoh-kahwin/korporat) + 4 halaman keadaan
+  (belum terbit/ditarik/tamat tempoh/tidak wujud), 5 skrin dashboard client, 6 skrin
+  admin (desktop). Tambah fixture pakej/motion/muzik/senarai pesanan/client/bayaran/
+  RSVP/permintaan motion. Disahkan: semua 36 laluan pulang HTTP 200 (`curl`), aliran
+  penuh `/` → daftar → 8 langkah → selesai → dashboard dilalui tanpa terperangkap
+  (Playwright + screenshot), admin diuji 1280px, tiada import Supabase (`grep`),
+  `lint`/`typecheck`/`build` lulus bersih.
+- Status: Siap — Fasa 3 selesai, semua checkpoint ditanda dalam `PROGRESS.md`.

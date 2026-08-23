@@ -43,7 +43,15 @@ Fasa ikut `DEV HANDOFF DOCS/09-BUILD-PHASES.md`. Satu fasa satu masa — tak lom
 - [ ] Diuji Safari iOS sebenar — belum boleh diuji dalam sandbox ini (hanya Chromium); disahkan logik `offsetTop` betul secara kod & visual Chromium
 
 ## Fasa 3 — Static pages guna seed data
-⬜ Belum Mula — semua 15+ skrin wujud & boleh diklik, guna data fixture.
+✅ Siap — semua 36 laluan wujud & boleh diklik, guna data fixture.
+- [x] Setiap laluan dalam `03-SITEMAP §2` memberi halaman (disahkan `curl` — semua 36 pulang 200)
+- [x] Boleh berjalan dari `/` → daftar → 8 langkah → selesai → dashboard **tanpa terperangkap** (disahkan Playwright hujung-ke-hujung)
+- [x] Butang Kembali dan LANGKAH n/8 ada pada setiap skrin `/buat/*`
+- [x] Empat halaman keadaan `/i/[slug]` boleh dilihat melalui URL demo (`/i/demo-belum-terbit`, `/i/demo-ditarik`, `/i/demo-tamat-tempoh`, slug rawak → tidak wujud)
+- [x] Semua teks BM; tiada lorem ipsum tertinggal
+- [x] Admin diuji pada 1280px; semua skrin client diuji pada 360px
+- [x] Tiada import Supabase di mana-mana lagi (disahkan `grep`)
+- [x] Entri changelog ditulis
 
 ## Fasa 4 — Database & Auth (Supabase lokal)
 ⬜ Belum Mula — migrasi SQL, RLS, seed, auth (Supabase jalan lokal via Docker).

@@ -93,3 +93,34 @@
   §Fasa 2) dilaksanakan sebagai overlay mutlak di atas kandungan kad (bukan halaman
   scroll-snap berasingan) supaya "halaman 0" benar-benar hilang selepas dibuka —
   ditafsir dari perkataan "overlay" dalam spesifikasi, bukan keputusan produk baru.
+
+## [2026-08-23 06:10] — Fasa 3: Static pages guna seed data
+- **Fasa:** Fasa 3 — Static pages guna seed data
+- **Buat apa:** Bina semua 36 laluan dari `03-SITEMAP-ROUTING.md §1`: 6 awam, 4 auth
+  (UI sahaja), 9 skrin aliran cipta (`/buat/pakej` + 8 langkah `/buat/demo/*`), `/i/[slug]`
+  (kad awam sebenar untuk `contoh-kahwin`/`contoh-korporat` + 4 halaman keadaan ikut
+  `03-SITEMAP §3`), 5 skrin dashboard client, 6 skrin admin desktop. Aliran cipta guna
+  `DrafPesananProvider` — React Context dalam memori sahaja (BUKAN `localStorage`, ikut
+  larangan `CLAUDE.md §3.9`) untuk kongsi state merentasi 8 langkah; hilang bila refresh
+  secara sengaja kerana belum ada DB (autosave sebenar dibina Fasa 5). Tambah fixture:
+  `pakej.ts` (bentuk sama jadual DB), `motion.ts`, `muzik.ts`, `admin.ts` (senarai pesanan/
+  client/bayaran/RSVP/permintaan motion), `draf.ts` (state wizard + mapper ke
+  `PesananFixture` untuk pratonton guna `<KadJemputan>` yang sama).
+- **Fail disentuh:** ~40 fail baru merentasi `app/(awam)/*`, `app/(auth)/*`,
+  `app/(client)/buat/*`, `app/(client)/dashboard/*`, `app/(admin)/admin/*`, `app/i/[slug]`,
+  `komponen/awam/*`, `komponen/buat/*`, `komponen/kad/HalamanKeadaanKad.tsx`,
+  `lib/fixture/{pakej,motion,muzik,admin,draf}.ts`
+- **Migrasi DB:** tiada
+- **Env baru:** tiada
+- **Diuji:** `pnpm lint` ✅ · `pnpm typecheck` ✅ · `pnpm build` (32 laluan Next.js) ✅ ·
+  `pnpm test` ✅ · `curl` semua 36 laluan → HTTP 200 (tiada 404 tak sengaja) · Playwright
+  hujung-ke-hujung: `/` → Mula → daftar → 8 langkah (isi maklumat, rujukan, jana semula
+  tema, motion, sentuhan, pratonton, bayar) → selesai → dashboard, tiada terperangkap,
+  screenshot disahkan setiap langkah · admin diuji 1280px (sidebar nav, jadual, kad stat)
+  · `grep` sahkan tiada import Supabase sebenar (hanya sebutan dalam komen `// Fasa 4`).
+- **Belum siap / TODO:** Auth sebenar, Supabase, upload sebenar, penjana palet sebenar,
+  bayaran sebenar — semua sengaja di luar skop Fasa 3, dibina bermula Fasa 4.
+- **Beza dari dokumen:** Laluan aliran cipta guna segmen `/buat/demo/*` (bukan
+  `/buat/[id]/*` sebenar) kerana `09-BUILD-PHASES.md §Fasa 3` sendiri menetapkan
+  `/buat/demo/maklumat` dsb. sebagai laluan Fasa 3 (id sebenar datang Fasa 5 bila DB
+  wujud) — konsisten dengan dokumen, bukan penyimpangan.
