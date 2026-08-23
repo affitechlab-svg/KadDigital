@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #161826;
+  --color-surface: #232532;
+  --color-section: #262a60;
+  --color-section-glow: #353b80;
+  --color-section-ghost: #4c5397;
+  --color-accent: #9184d9;
+  --color-text: #e9e9ed;
+  --radius: 8px;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-section: var(--color-section);
+  --color-section-glow: var(--color-section-glow);
+  --color-section-ghost: var(--color-section-ghost);
+  --color-accent: var(--color-accent);
+  --color-text: var(--color-text);
+  --radius-nocturne: var(--radius);
+  --font-sans: var(--font-body);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
